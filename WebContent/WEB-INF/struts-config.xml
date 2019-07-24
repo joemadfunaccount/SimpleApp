@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE struts-config PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+"http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+
+	<!-- <global-forwards> <forward name="search" path="/search.jsp" /> </global-forwards>  -->
+
+	<form-beans>
+		<form-bean name="loginForm"
+			type="com.joemad.actionform.LoginForm" />
+	</form-beans>
+	
+	<action-mappings>
+		<action path="/login" type="com.joemad.action.LoginAction"
+			name="loginForm" scope="request" validate="true" input="/index.jsp">
+			<forward name="loginSuccess" path="/chatroom.jsp"></forward>
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="MessageResources" />
+	
+</struts-config>
