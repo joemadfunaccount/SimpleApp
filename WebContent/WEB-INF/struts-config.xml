@@ -3,21 +3,40 @@
 "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
 "http://struts.apache.org/dtds/struts-config_1_3.dtd">
 <struts-config>
-
-	<!-- <global-forwards> <forward name="search" path="/search.jsp" /> </global-forwards>  -->
-
+	<!-- <global-forwards> <forward name="search" path="/search.jsp" /> </global-forwards> -->
 	<form-beans>
 		<form-bean name="loginForm"
 			type="com.joemad.actionform.LoginForm" />
+
+		<form-bean name="registrationForm"
+			type="com.joemad.actionform.RegistrationForm" />
+
+		<form-bean name="sendMessageForm"
+			type="com.joemad.actionform.SendMessageForm" />
 	</form-beans>
-	
+
 	<action-mappings>
 		<action path="/login" type="com.joemad.action.LoginAction"
 			name="loginForm" scope="request" validate="true" input="/index.jsp">
 			<forward name="loginSuccess" path="/chatroom.jsp"></forward>
 		</action>
+		
+		<action path="/register" type="com.joemad.action.RegistrationAction"
+			name="registrationForm" scope="request" validate="true" input="/index.jsp">
+		</action>
+		
+		<action path="/getMessages" type="com.joemad.action.GetMessagesAction" scope="request"></action>
+		
+		<action path="/sendMessage" type="com.joemad.action.SendMessageAction"
+			name="sendMessageForm" scope="request" validate="true">
+		</action>
+		
+		<action path="/userActive" type="com.joemad.action.UserActiveAction" scope="request"></action>
+		
+		<action path="/verifyemail" type="com.joemad.action.VerifyUserEmailAction" scope="request"></action>
+	
 	</action-mappings>
-	
+
 	<message-resources parameter="MessageResources" />
-	
+
 </struts-config>
