@@ -3,18 +3,20 @@ package com.joemad.dao;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-
 import com.joemad.model.Constants;
 import com.joemad.model.entity.User;
 import com.joemad.util.CodeGeneratorUtil;
+import com.joemad.util.JPAUtil;
 
 public class UserDao implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private EntityManager entityManager = ConnectionManager.getEntityManager();
 	private static MessageDao messageDao;
+	private Logger logger = Logger.getGlobal();
 	
 	static {
 		messageDao = new MessageDao();
@@ -31,7 +33,7 @@ public class UserDao implements Serializable {
 		try {
 			user = query.getSingleResult();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("User not found");
 		}
 		return user;
 	}
@@ -54,7 +56,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = entityManager.find(User.class, userId);
 			user.setLastReadMessageId(lastReadMessageId);
-			entityManager.merge(user);
+			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -76,7 +78,7 @@ public class UserDao implements Serializable {
 			user.setVerified(0);
 			user.setLocked(0);
 			user.setGeneratedCode(CodeGeneratorUtil.generateRandomString());
-			user = entityManager.merge(user);
+			user = (User) JPAUtil.mergeObj(entityManager,user);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +90,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = entityManager.find(User.class, userId);
 			user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-			entityManager.merge(user);
+			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -100,7 +102,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = entityManager.find(User.class, userId);
 			user.setFailedLoginAttempts(0);
-			entityManager.merge(user);
+			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -112,7 +114,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = entityManager.find(User.class, userId);
 			user.setLocked(1);
-			entityManager.merge(user);
+			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -124,7 +126,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = entityManager.find(User.class, userId);
 			user.setIpAddress(remoteAdress);
-			entityManager.merge(user);
+			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -138,7 +140,7 @@ public class UserDao implements Serializable {
 			if(user!=null && user.getGeneratedCode()!=null){
 				if(user.getGeneratedCode().equals(requestCode)){
 					user.setVerified(1);
-					entityManager.merge(user);
+					JPAUtil.mergeObj(entityManager,user);
 					return true;
 				}
 			}

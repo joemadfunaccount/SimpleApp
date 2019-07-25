@@ -1,7 +1,6 @@
 package com.joemad.action;
 
 import java.util.Base64;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,9 +22,10 @@ public class LoginAction extends Action {
 			HttpServletResponse response) throws Exception {
 		LoginForm loginForm = (LoginForm) form;
 		User user = new User();
-		if (isLoginSuccessful(loginForm, request)) {
+		Boolean isLoginSuccessful = isLoginSuccessful(loginForm, request);
+		user = (User) request.getAttribute("user");
+		if (isLoginSuccessful) {
 			HttpSession session = request.getSession();
-			user = (User) request.getAttribute("user");
 			session.setAttribute("loggedInUser", user);
 			CurrentPeople.addUser(user);
 			if (user.getVerified() == 0) {
@@ -42,12 +42,16 @@ public class LoginAction extends Action {
 				return mapping.findForward("loginSuccess");
 			}
 		} else {
-			if (user != null) {
+			if (user!=null && user.getUserId() != null) {
 				if (user.getFailedLoginAttempts() > 10) {
 					userDao.lockUser(user.getUserId());
+					response.getWriter().write("Too many failed login attempts, you have been locked, please contact the system administrator!");
 				} else {
 					userDao.incrementFailedLoginAttempts(user.getUserId());
+					response.getWriter().write("Incorrect Username or Password!");
 				}
+			} else {
+				response.getWriter().write("Username doesn't exist, please, make sure you have entered the correct username!");
 			}
 		}
 		return null;
@@ -55,10 +59,10 @@ public class LoginAction extends Action {
 
 	private boolean isLoginSuccessful(LoginForm loginForm, HttpServletRequest request) {
 		User user = userDao.getUserByUsername(loginForm.getUsername());
+		request.setAttribute("user", user);
 		if (user != null) {
 			String decodedPassword = new String(Base64.getDecoder().decode(user.getPassword()));
 			if (loginForm.getPassword().equals(decodedPassword)) {
-				request.setAttribute("user", user);
 				return true;
 			}
 		}

@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import com.joemad.model.entity.Message;
 import com.joemad.model.entity.User;
+import com.joemad.util.JPAUtil;
 
 public class MessageDao implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,7 +40,7 @@ public class MessageDao implements Serializable {
 			newMessage.setCreationDate(new Date());
 			newMessage.setUserId(userId);
 			newMessage.setMessage(message);
-			entityManager.merge(newMessage);
+			JPAUtil.mergeObj(entityManager,newMessage);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
