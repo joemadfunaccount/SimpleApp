@@ -21,12 +21,14 @@
 		</div>
 
 		<div class="messageArea">
-			<textarea class="messageInput">Your message here...</textarea>
+			<html:form action="/sendMessage" styleId="messageFormId">
+			<html:textarea styleId="messageId" styleClass="messageInput" property="message">Your message here...</html:textarea>
+			</html:form>
 		</div>
 	</div>	
 
 
 </div> 
-<script type="text/javascript" src="js/myscript.js"></script>
+<script type="text/javascript" src="js/chatroom.js"></script>
 </body>
 </html>

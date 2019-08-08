@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javaee-api-7.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.8.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Mail"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/guava-28.0-jre.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -21,7 +21,10 @@ public class Message implements Serializable {
 
 	@Column(name = "user_id")
 	private Long userId;
-
+	
+	@Transient
+	private String senderName;
+	
 	public Message() {
 	}
 
@@ -55,5 +58,13 @@ public class Message implements Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
 	}
 }

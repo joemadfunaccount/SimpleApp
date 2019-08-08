@@ -23,6 +23,6 @@ public class VerifyUserEmailAction extends Action {
 			} else {
 				response.getWriter().write("error");
 			}
-		return null;
+			return null;
 	}
 }

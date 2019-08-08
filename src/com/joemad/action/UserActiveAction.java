@@ -21,6 +21,6 @@ public class UserActiveAction extends Action {
 			} catch(Exception e){
 				e.printStackTrace();
 			}
-		return null;
+			return null;
 	}
 }

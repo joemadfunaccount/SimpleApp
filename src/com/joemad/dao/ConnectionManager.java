@@ -2,6 +2,7 @@ package com.joemad.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 
 public class ConnectionManager {

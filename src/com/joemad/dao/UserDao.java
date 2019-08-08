@@ -4,13 +4,15 @@ import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Logger;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
 import com.joemad.model.Constants;
 import com.joemad.model.entity.User;
 import com.joemad.util.CodeGeneratorUtil;
 import com.joemad.util.JPAUtil;
+
 
 public class UserDao implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -44,17 +46,18 @@ public class UserDao implements Serializable {
 		}
 		User user = null;
 		try {
+			entityManager.clear();
 			user = entityManager.find(User.class, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			;
 		}
 		return user;
 	}
 
+	
 	public boolean updateLastReadMessage(Long userId, Long lastReadMessageId) {
 		try {
-			User user = entityManager.find(User.class, userId);
+			User user = getUser(userId);
 			user.setLastReadMessageId(lastReadMessageId);
 			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
@@ -63,6 +66,7 @@ public class UserDao implements Serializable {
 		return true;
 	}
 
+	
 	public User persistUser(String name, String username, String password, String email, String remoteAddress) {
 		User user = new User();
 		try {
@@ -86,9 +90,10 @@ public class UserDao implements Serializable {
 		return user;
 	}
 
+	
 	public boolean incrementFailedLoginAttempts(Long userId) {
 		try {
-			User user = entityManager.find(User.class, userId);
+			User user = getUser(userId);
 			user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
 			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
@@ -98,9 +103,10 @@ public class UserDao implements Serializable {
 		return true;
 	}
 
+	
 	public boolean resetFailedLoginAttempts(Long userId) {
 		try {
-			User user = entityManager.find(User.class, userId);
+			User user = getUser(userId);
 			user.setFailedLoginAttempts(0);
 			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
@@ -110,9 +116,10 @@ public class UserDao implements Serializable {
 		return true;
 	}
 
+	
 	public boolean lockUser(Long userId) {
 		try {
-			User user = entityManager.find(User.class, userId);
+			User user = getUser(userId);
 			user.setLocked(1);
 			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
@@ -122,9 +129,10 @@ public class UserDao implements Serializable {
 		return true;
 	}
 
+	
 	public boolean updateUserAddress(Long userId, String remoteAdress) {
 		try {
-			User user = entityManager.find(User.class, userId);
+			User user = getUser(userId);
 			user.setIpAddress(remoteAdress);
 			JPAUtil.mergeObj(entityManager,user);
 		} catch (Exception e) {
@@ -133,6 +141,7 @@ public class UserDao implements Serializable {
 		}
 		return true;
 	}
+	
 	
 	public boolean verifiedUser(String username, String requestCode) {
 		User user = getUserByUsername(username);

@@ -29,10 +29,10 @@ public class RegistrationForm extends ActionForm{
 			errors.add("name", new ActionMessage("error.validation.name.empty"));
 		}
 		if (email == null || "".equals(email.trim())) {
-			errors.add("message", new ActionMessage("error.validation.email.empty"));
+			errors.add("email", new ActionMessage("error.validation.email.empty"));
 		} else {
 			if(!ValidationUtil.isEmailValid(email)) {
-				errors.add("message", new ActionMessage("error.validation.email.malformedformat"));
+				errors.add("email", new ActionMessage("error.validation.email.malformedformat"));
 			}
 		}
 		if (username == null || "".equals(username)) {

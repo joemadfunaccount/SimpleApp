@@ -5,10 +5,13 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
 import com.joemad.model.entity.Message;
 import com.joemad.model.entity.User;
 import com.joemad.util.JPAUtil;
+import com.joemad.util.JsonUtil;
+
 
 public class MessageDao implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -19,20 +22,21 @@ public class MessageDao implements Serializable {
 		userDao = new UserDao();
 	}
 	
-	public List<Message> getUnreadMessages(Long userId) {
+	public String getUnreadMessages(Long userId) {
+		String messages = "";
 		User user = userDao.getUser(userId);
 		Long lastReadMessageId = user.getLastReadMessageId();
-		TypedQuery<Message> query = entityManager
-				.createQuery("SELECT m FROM Message m where m.messageId > :lastReadMessageId", Message.class);
-		query.setParameter("lastReadMessageId", lastReadMessageId + "");
-		List<Message> unreadMessages = null;
+		Query query = entityManager.createQuery("SELECT m, u.name FROM Message m inner join User u on m.userId = u.userId where m.messageId > :lastReadMessageId order by m.messageId ASC");
+		query.setParameter("lastReadMessageId", lastReadMessageId);
 		try {
-			unreadMessages = query.getResultList();
+			List<Object> unreadMessages = query.getResultList();
+			messages = JsonUtil.getGson().toJson(unreadMessages);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return unreadMessages;
+		return messages;
 	}
+	
 	
 	public boolean persistMessage(Long userId, String message){
 		try {
@@ -40,7 +44,7 @@ public class MessageDao implements Serializable {
 			newMessage.setCreationDate(new Date());
 			newMessage.setUserId(userId);
 			newMessage.setMessage(message);
-			JPAUtil.mergeObj(entityManager,newMessage);
+			JPAUtil.mergeObj(entityManager, newMessage);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
