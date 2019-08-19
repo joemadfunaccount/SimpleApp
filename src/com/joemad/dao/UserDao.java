@@ -8,15 +8,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
+import com.joemad.model.Connection;
 import com.joemad.model.Constants;
 import com.joemad.model.entity.User;
 import com.joemad.util.CodeGeneratorUtil;
+import com.joemad.util.ConnectionManager;
 import com.joemad.util.JPAUtil;
 
 
 public class UserDao implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private EntityManager entityManager = ConnectionManager.getEntityManager();
 	private static MessageDao messageDao;
 	private Logger logger = Logger.getGlobal();
 	
@@ -25,6 +26,8 @@ public class UserDao implements Serializable {
 	}
 	
 	public User getUserByUsername(String username) {
+		Connection activeConnection = getActiveConnection();
+		EntityManager entityManager = activeConnection.getEntityManager();
 		if (username == null || "".equals(username.trim())) {
 			return null;
 		}
@@ -37,6 +40,7 @@ public class UserDao implements Serializable {
 		} catch (Exception e) {
 			logger.info("User not found");
 		}
+		ConnectionManager.returnConnectionToThePool(activeConnection);
 		return user;
 	}
 
@@ -45,12 +49,15 @@ public class UserDao implements Serializable {
 			return null;
 		}
 		User user = null;
+		Connection activeConnection = getActiveConnection();
 		try {
+			EntityManager entityManager = activeConnection.getEntityManager();
 			entityManager.clear();
 			user = entityManager.find(User.class, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		ConnectionManager.returnConnectionToThePool(activeConnection);
 		return user;
 	}
 
@@ -59,7 +66,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = getUser(userId);
 			user.setLastReadMessageId(lastReadMessageId);
-			JPAUtil.mergeObj(entityManager,user);
+			JPAUtil.mergeObj(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,7 +89,7 @@ public class UserDao implements Serializable {
 			user.setVerified(0);
 			user.setLocked(0);
 			user.setGeneratedCode(CodeGeneratorUtil.generateRandomString());
-			user = (User) JPAUtil.mergeObj(entityManager,user);
+			user = (User) JPAUtil.mergeObj(user);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +102,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = getUser(userId);
 			user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
-			JPAUtil.mergeObj(entityManager,user);
+			JPAUtil.mergeObj(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -108,7 +115,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = getUser(userId);
 			user.setFailedLoginAttempts(0);
-			JPAUtil.mergeObj(entityManager,user);
+			JPAUtil.mergeObj(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -121,7 +128,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = getUser(userId);
 			user.setLocked(1);
-			JPAUtil.mergeObj(entityManager,user);
+			JPAUtil.mergeObj(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -134,7 +141,7 @@ public class UserDao implements Serializable {
 		try {
 			User user = getUser(userId);
 			user.setIpAddress(remoteAdress);
-			JPAUtil.mergeObj(entityManager,user);
+			JPAUtil.mergeObj(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -149,7 +156,7 @@ public class UserDao implements Serializable {
 			if(user!=null && user.getGeneratedCode()!=null){
 				if(user.getGeneratedCode().equals(requestCode)){
 					user.setVerified(1);
-					JPAUtil.mergeObj(entityManager,user);
+					JPAUtil.mergeObj(user);
 					return true;
 				}
 			}
@@ -158,5 +165,8 @@ public class UserDao implements Serializable {
 		}
 		return false;
 	}
-
+	
+	private Connection getActiveConnection(){
+		return ConnectionManager.getActiveConnection();
+	}
 }

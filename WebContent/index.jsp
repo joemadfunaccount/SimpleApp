@@ -2,6 +2,15 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <!DOCTYPE html>
+
+<% 
+if(session.getAttribute("loggedInUser") != null){
+	String nextJSP = "/chatroom.jsp";
+	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
+	dispatcher.forward(request,response);
+} 
+%>
+
 <html>
 <head>
 	<title>JoeMad - Login</title>

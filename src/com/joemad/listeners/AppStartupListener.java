@@ -3,7 +3,7 @@ package com.joemad.listeners;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.joemad.dao.ConnectionManager;
+import com.joemad.util.ConnectionManager;
 import com.joemad.util.EmailUtil;
 
 public class AppStartupListener implements ServletContextListener {

@@ -7,15 +7,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import com.joemad.model.Connection;
 import com.joemad.model.entity.Message;
 import com.joemad.model.entity.User;
+import com.joemad.util.ConnectionManager;
 import com.joemad.util.JPAUtil;
 import com.joemad.util.JsonUtil;
 
 
 public class MessageDao implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private EntityManager entityManager = ConnectionManager.getEntityManager();
 	private static UserDao userDao = null;
 	
 	static {
@@ -26,6 +27,8 @@ public class MessageDao implements Serializable {
 		String messages = "";
 		User user = userDao.getUser(userId);
 		Long lastReadMessageId = user.getLastReadMessageId();
+		Connection activeConnection = getActiveConnection();
+		EntityManager entityManager = activeConnection.getEntityManager();
 		Query query = entityManager.createQuery("SELECT m, u.name FROM Message m inner join User u on m.userId = u.userId where m.messageId > :lastReadMessageId order by m.messageId ASC");
 		query.setParameter("lastReadMessageId", lastReadMessageId);
 		try {
@@ -34,6 +37,7 @@ public class MessageDao implements Serializable {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		ConnectionManager.returnConnectionToThePool(activeConnection);
 		return messages;
 	}
 	
@@ -44,7 +48,7 @@ public class MessageDao implements Serializable {
 			newMessage.setCreationDate(new Date());
 			newMessage.setUserId(userId);
 			newMessage.setMessage(message);
-			JPAUtil.mergeObj(entityManager, newMessage);
+			JPAUtil.mergeObj(newMessage);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -53,6 +57,8 @@ public class MessageDao implements Serializable {
 	}
 	
 	public Long getLastMessageId(){
+		Connection activeConnection = getActiveConnection();
+		EntityManager entityManager = activeConnection.getEntityManager();
 		Query query = entityManager.createQuery("SELECT max(m.messageId) from Message m");
 		Object maxIdObj = query.getSingleResult();
 		String maxIdObjStr = maxIdObj+"";
@@ -62,6 +68,11 @@ public class MessageDao implements Serializable {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		ConnectionManager.returnConnectionToThePool(activeConnection);
 		return maxId;
+	}
+	
+	private Connection getActiveConnection(){
+		return ConnectionManager.getActiveConnection();
 	}
 }
