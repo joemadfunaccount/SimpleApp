@@ -1,6 +1,7 @@
 var messagesContainerHeight = $(".messagesContainer").height();
 var toInfinityAndBeyond = 99999999999999999;
 var messagesContainer = $(".messagesContainer");
+var currentPeople = $(".currentPeople");
 $(".messageInput")
 		.on(
 				"keypress",
@@ -29,10 +30,6 @@ $(".messageInput")
 					}
 				});
 
-$(".currentPeople")
-		.append(
-				"<div style='font-weight:bold; font-family:sans-serif; color:#0000ee; font-size:17px; text-align:center;'>Mohamed Youssef</div>");
-
 setInterval(function(){
 						$.ajax({
 						url: "http://localhost/getMessages.do",
@@ -56,3 +53,48 @@ setInterval(function(){
 						});	
 						messagesContainer.scrollTop(toInfinityAndBeyond);
 },1000);
+
+setInterval(function(){
+						$.ajax({
+						url: "http://localhost/getCurrentPeopleAction.do",
+						method: "POST",
+						context: document.body,
+						data: "",
+						dataType: "text" 
+						}).done(function(result) {
+							currentPeople.html("");
+							if(result == ""){
+								return;
+							}
+							var jsonResult = JSON.parse(result);
+							jsonResult.forEach(function(resultValue,index){
+							currentPeople.append("<div style='font-weight:bold; font-family:sans-serif; color:#0000ee; font-size:17px; text-align:center;'>"+resultValue+"</div>");
+							});
+						})
+						  .fail(function(error) {
+						    console.log("Some Shit Happened");
+						})
+						  .always(function() {
+						    console.log("Request Complete");
+						});	
+},2000);
+
+
+setInterval(function(){
+						$.ajax({
+						url: "http://localhost/userActive.do",
+						method: "POST",
+						context: document.body,
+						data: "",
+						dataType: "text" 
+						}).done(function(result) {
+						   console.log("User Active Request Done");
+						})
+						  .fail(function(error) {
+						    console.log("Some Shit Happened");
+						})
+						  .always(function() {
+						    console.log("Request Complete");
+						});	
+},2000);
+

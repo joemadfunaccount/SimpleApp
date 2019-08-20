@@ -35,6 +35,8 @@
 		
 		<action path="/verifyemail" type="com.joemad.action.VerifyUserEmailAction" scope="request" input="/index.jsp"></action>
 	
+		<action path="/getCurrentPeopleAction" type="com.joemad.action.GetCurrentPeopleAction" scope="request" input="/chatroom.jsp"></action>
+		
 	</action-mappings>
 
 	<message-resources parameter="MessageResources" />
