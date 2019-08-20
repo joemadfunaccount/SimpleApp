@@ -11,7 +11,7 @@ import com.joemad.util.JsonUtil;
 public class CurrentPeople {
 	private static Map<User,Date> currentUsers= new HashMap<User,Date>();
 	
-	public static String getCurrentPeople() {
+	public static synchronized String getCurrentPeople() {
 		List<String> currentPeopleStr = new ArrayList<String>();
 		Date now = new Date();
 		if(!currentUsers.isEmpty()) {

@@ -17,12 +17,12 @@
 	</div>
 
 	<div class="regContainer">
-		<html:form class="regForm" action="/register">
+		<html:form styleClass="regForm" action="/register">
 			<html:text styleClass="reginputText" property= "name" value="Name" />
 			<html:text styleClass="reginputText" property="username" value="Username" />
 			<html:text styleClass="reginputText" property="email" value="Email" />
-			<html:text styleClass="reginputText" property="password" value="Password" />
-			<html:submit value="Register" class="registerButton"/>
+			<html:password styleClass="reginputText" property="password" value="Password" />
+			<html:submit value="Register" styleClass="registerButton"/>
 		</html:form>
 	</div>
 

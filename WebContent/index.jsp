@@ -28,6 +28,7 @@ if(session.getAttribute("loggedInUser") != null){
 			<html:password property="password" styleClass="inputText" value="Password" styleId="password" onfocus="resetPassword()"/>
 			<html:submit value="Login" styleClass="loginButton"/>
 		</html:form>
+		<div class="registerContainer">Don't have an account? <a href="/registration.jsp" class="registerLink">Register</a></div>
 	</div>
 	<div class="containerFooter">
 		No Copyright and Sh*t

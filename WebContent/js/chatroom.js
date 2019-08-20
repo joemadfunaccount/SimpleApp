@@ -56,7 +56,7 @@ setInterval(function(){
 
 setInterval(function(){
 						$.ajax({
-						url: "http://localhost/getCurrentPeopleAction.do",
+						url: "http://localhost/getCurrentPeople.do",
 						method: "POST",
 						context: document.body,
 						data: "",

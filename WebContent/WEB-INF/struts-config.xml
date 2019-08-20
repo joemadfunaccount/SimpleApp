@@ -31,11 +31,11 @@
 			name="sendMessageForm" scope="request" validate="true" input="/chatroom.jsp">
 		</action>
 		
-		<action path="/userActive" type="com.joemad.action.UserActiveAction" scope="session" input="/chatroom.jsp"></action>
+		<action path="/userActive" type="com.joemad.action.UserActiveAction" scope="request" input="/chatroom.jsp"></action>
 		
 		<action path="/verifyemail" type="com.joemad.action.VerifyUserEmailAction" scope="request" input="/index.jsp"></action>
 	
-		<action path="/getCurrentPeopleAction" type="com.joemad.action.GetCurrentPeopleAction" scope="request" input="/chatroom.jsp"></action>
+		<action path="/getCurrentPeople" type="com.joemad.action.GetCurrentPeopleAction" scope="request" input="/chatroom.jsp"></action>
 		
 	</action-mappings>
 

@@ -20,7 +20,8 @@ public class EmailUtil {
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
 		prop.put("mail.smtp.auth", "true");
-		prop.put("mail.smtp.starttls.enable", "true"); // TLS
+		prop.put("mail.smtp.starttls.enable", "true");
+		prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 		session = Session.getInstance(prop, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(fromEmail, password);
